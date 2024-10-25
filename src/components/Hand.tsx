@@ -16,7 +16,7 @@ const Hand: React.FC<HandProps> = ({ cards, title, handValue }) => {
       </h2>
       <div className="flex flex-col items-center sm:flex-row gap-1">
         {cards.map((card, index) => (
-          <Card key={index} card={card} />
+          <Card key={index} card={card} index={index} />
         ))}
       </div>
     </div>

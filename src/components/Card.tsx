@@ -5,11 +5,12 @@ interface CardProps {
     rank: string;
     suit: string;
   };
+  index: number;
 }
 
-const Card: React.FC<CardProps> = ({ card }) => {
+const Card: React.FC<CardProps> = ({ card, index }) => {
   return (
-    <div className="w-32 h-40 bg-white border rounded-lg shadow-md flex flex-col items-center  justify-items-start text-xl text-slate-800 animate-[pulse_1s_ease-in-out]">
+    <div className={`w-32 h-40 bg-red-700 border rounded-lg shadow-md flex flex-col items-center  justify-items-start text-xl text-red-700 flip-card poker-delay-${index}`}>
       <p className="flex justify-end">{card.rank}</p>
       <h1 className="text-6xl">{card.suit}</h1>
     </div>
