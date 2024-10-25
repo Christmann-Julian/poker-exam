@@ -14,7 +14,7 @@ function App() {
   const [dealerValue, setDealerValue] = useState<string>("");
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [result, setResult] = useState<ResultType>({ type: "", message: "" });
-  const [newGame, setNewGame] = useState<boolean>(false);
+  const [changeCount, setChangeCount] = useState<number>(0);
 
   const getRandomCardFromDeck = () => {
     const randomIndex = Math.floor(Math.random() * gameDeck.length);
@@ -29,9 +29,26 @@ function App() {
     setDealerHand([]);
     setGameOver(false);
     setResult({ type: "", message: "" });
-    setNewGame(false);
     setGameDeck(cardDeck);
+    setChangeCount(0);
   };
+
+  const changeCard = (index: number) => {
+    if (changeCount < 3) {
+      const newCard = getRandomCardFromDeck();
+      setPlayerHand(prevHand => {
+        const newHand = [...prevHand];
+        newHand[index] = newCard;
+        return newHand;
+      });
+      setChangeCount(prevCount => prevCount + 1);
+    }
+  };
+
+  const changeCard1 = () => changeCard(0);
+  const changeCard2 = () => changeCard(1);
+  const changeCard3 = () => changeCard(2);
+  const changeCard4 = () => changeCard(3);
 
   useEffect(() => {
     if (playerHand.length === 0 && dealerHand.length === 0) {
@@ -48,8 +65,11 @@ function App() {
     const { type: playerType, value: playerValueEvaluation } = evaluateHand(playerHand);
     const { type: dealerType, value: dealerValueEvaluation } = evaluateHand(dealerHand);
 
-    setPlayerValue(playerType ? playerType + " : " + playerValueEvaluation : "");
-    setDealerValue(dealerType ? dealerType + " : " + dealerValueEvaluation : "");
+    const tempPlayerValue = playerType ? playerType + " : " + playerValueEvaluation : "";
+    const tempDealerValue = dealerType ? dealerType + " : " + dealerValueEvaluation : "";
+
+    setPlayerValue(tempPlayerValue);
+    setDealerValue(tempDealerValue);
 
     const handNote: { [key: string]: number } = {
       "High Card": 1,
@@ -63,9 +83,9 @@ function App() {
     const dealerHandNote = dealerType ? handNote[dealerType] : 0;
 
     if (playerHandNote > dealerHandNote) {
-      setResult({ type: "player", message: "Player wins!" });
+      setResult({ type: "player", message: "Player wins with " + tempPlayerValue });
     } else if (playerHandNote < dealerHandNote) {
-      setResult({ type: "dealer", message: "Dealer wins!" });
+      setResult({ type: "dealer", message: "Dealer wins with " + tempDealerValue });
     } else {
       const ranks: { [key: string]: number } = {
         "7": 7,
@@ -81,9 +101,9 @@ function App() {
       const dealerRanks = ranks[dealerValueEvaluation ?? ""] ?? 0;
 
       if (playerRanks > dealerRanks) {
-        setResult({ type: "player", message: "Player wins!" });
+        setResult({ type: "player", message: "Player wins with " + tempPlayerValue });
       } else if (playerRanks < dealerRanks) {
-        setResult({ type: "dealer", message: "Dealer wins!" });
+        setResult({ type: "dealer", message: "Dealer wins with " + tempDealerValue });
       } else {
         setResult({ type: "draw", message: "Draw!" });
       }
@@ -93,7 +113,6 @@ function App() {
    
   const confirmHand = () => {
     setGameOver(true);
-    setNewGame(true);
   };
 
   return (
@@ -106,7 +125,15 @@ function App() {
         playerValue={playerValue}
         dealerValue={dealerValue}
       />
-      <Control resetGame={resetGame} confirmHand={confirmHand}/>
+      <Control 
+        resetGame={resetGame} 
+        confirmHand={confirmHand} 
+        gameOver={gameOver} 
+        changeCard1={changeCard1} 
+        changeCard2={changeCard2} 
+        changeCard3={changeCard3} 
+        changeCard4={changeCard4} 
+      />
     </div>
   );
 }
