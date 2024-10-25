@@ -15,6 +15,7 @@ function App() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [result, setResult] = useState<ResultType>({ type: "", message: "" });
   const [changeCount, setChangeCount] = useState<number>(0);
+  const [lockedCards, setLockedCards] = useState<boolean[]>([false, false, false, false]);
 
   const getRandomCardFromDeck = () => {
     const randomIndex = Math.floor(Math.random() * gameDeck.length);
@@ -31,24 +32,54 @@ function App() {
     setResult({ type: "", message: "" });
     setGameDeck(cardDeck);
     setChangeCount(0);
+    setLockedCards([false, false, false, false]);
   };
 
-  const changeCard = (index: number) => {
-    if (changeCount < 3) {
-      const newCard = getRandomCardFromDeck();
+  const confirmLockCards = () => {
+    for (let i = 0; i < playerHand.length; i++) {
+      if (!lockedCards[i]) {
+        changeCard(i);
+      }
+    }
+  };
+
+  const changeCard = (index?: number) => {
+    if (index !== undefined) {
+      if (changeCount <= 3 && !lockedCards[index]) {
+        const newCard = getRandomCardFromDeck();
+        setPlayerHand(prevHand => {
+          const newHand = [...prevHand];
+          newHand[index] = newCard;
+          return newHand;
+        });
+        setChangeCount(prevCount => prevCount + 1);
+      }
+    } else {
       setPlayerHand(prevHand => {
-        const newHand = [...prevHand];
-        newHand[index] = newCard;
+        const newHand = prevHand.map((card, i) => {
+          if (!lockedCards[i]) {
+            return getRandomCardFromDeck();
+          }
+          return card;
+        });
         return newHand;
       });
       setChangeCount(prevCount => prevCount + 1);
     }
   };
 
-  const changeCard1 = () => changeCard(0);
-  const changeCard2 = () => changeCard(1);
-  const changeCard3 = () => changeCard(2);
-  const changeCard4 = () => changeCard(3);
+  const toggleLockCard = (index: number) => {
+    setLockedCards(prevBlocked => {
+      const newBlocked = [...prevBlocked];
+      newBlocked[index] = !newBlocked[index];
+      return newBlocked;
+    });
+  };
+  
+  const lockCard1 = () => toggleLockCard(0);
+  const lockCard2 = () => toggleLockCard(1);
+  const lockCard3 = () => toggleLockCard(2);
+  const lockCard4 = () => toggleLockCard(3);
 
   useEffect(() => {
     if (playerHand.length === 0 && dealerHand.length === 0) {
@@ -129,10 +160,13 @@ function App() {
         resetGame={resetGame} 
         confirmHand={confirmHand} 
         gameOver={gameOver} 
-        changeCard1={changeCard1} 
-        changeCard2={changeCard2} 
-        changeCard3={changeCard3} 
-        changeCard4={changeCard4} 
+        lockCard1={lockCard1} 
+        lockCard2={lockCard2} 
+        lockCard3={lockCard3} 
+        lockCard4={lockCard4} 
+        lockedCards={lockedCards}
+        confirmLockCards={confirmLockCards}
+        maxChangeCount={changeCount}
       />
     </div>
   );
