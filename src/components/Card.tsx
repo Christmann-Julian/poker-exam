@@ -1,10 +1,10 @@
 import React from "react";
 
 interface CardProps {
-    card: {
-      rank: string;
-      suit: string;
-    };
+  card: {
+    rank: string;
+    suit: string;
+  };
 }
 
 const Card: React.FC<CardProps> = ({ card }) => {
