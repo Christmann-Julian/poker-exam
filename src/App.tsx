@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { cardDeck } from './utils/CardDeck';
+import Card from './components/Card';
 
 function App() {
+  const [gameDeck, setGameDeck] = useState(cardDeck)
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <>
+      <Card card={{rank: "J", suit: "♠"}} />
+      <Card card={{rank: "9", suit: "♠"}} />
+      <Card card={{rank: "A", suit: "♥"}} />
+    </>
   );
 }
 
