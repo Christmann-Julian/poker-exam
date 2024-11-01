@@ -41,6 +41,7 @@ function App() {
         changeCard(i);
       }
     }
+    setChangeCount(prevCount => prevCount + 1);
   };
 
   const changeCard = (index?: number) => {
@@ -52,7 +53,6 @@ function App() {
           newHand[index] = newCard;
           return newHand;
         });
-        setChangeCount(prevCount => prevCount + 1);
       }
     } else {
       setPlayerHand(prevHand => {
@@ -64,15 +64,14 @@ function App() {
         });
         return newHand;
       });
-      setChangeCount(prevCount => prevCount + 1);
     }
   };
 
   const toggleLockCard = (index: number) => {
-    setLockedCards(prevBlocked => {
-      const newBlocked = [...prevBlocked];
-      newBlocked[index] = !newBlocked[index];
-      return newBlocked;
+    setLockedCards(prevLocked => {
+      const newLocked = [...prevLocked];
+      newLocked[index] = !newLocked[index];
+      return newLocked;
     });
   };
   
@@ -85,10 +84,6 @@ function App() {
     if (playerHand.length === 0 && dealerHand.length === 0) {
       setPlayerHand([getRandomCardFromDeck(), getRandomCardFromDeck(), getRandomCardFromDeck(), getRandomCardFromDeck()]);
       setDealerHand([getRandomCardFromDeck(), getRandomCardFromDeck(), getRandomCardFromDeck(), getRandomCardFromDeck()]);
-    }
-   
-    if (gameOver) {
-        
     }
   }, [gameOver]);
 
